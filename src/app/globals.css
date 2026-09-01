@@ -1,0 +1,309 @@
+@import "tailwindcss";
+
+/*
+ * Palette taken from Indonesian K3 / ISO 7010 safety signage rather than generic
+ * clinical blue: evacuation green, fire-equipment red, photoluminescent yellow.
+ * The green/red pair is semantic — on these forms "Tidak" and "Rusak" are literally
+ * the answers that generate follow-up work.
+ */
+@theme {
+  --color-paper: #f2f4ef;
+  --color-surface: #ffffff;
+  --color-ink: #14261c;
+  --color-ink-soft: #55645a;
+  --color-safe: #0f7a3d;
+  --color-safe-wash: #e6f1ea;
+  --color-alarm: #c6362b;
+  --color-alarm-wash: #f8e9e7;
+  --color-signal: #f5c518;
+  --color-rule: #c9d1c6;
+
+  --font-display: var(--font-barlow-condensed), "Arial Narrow", sans-serif;
+  --font-sans: var(--font-public-sans), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+
+  --radius-form: 2px;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* The sticky section header must not cover the heading you just jumped to. */
+  scroll-padding-top: 5.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-text-size-adjust: 100%;
+}
+
+/* One visible focus treatment everywhere, in the photoluminescent yellow. */
+:focus-visible {
+  outline: 3px solid var(--color-signal);
+  outline-offset: 2px;
+}
+
+/* --- Signage type ------------------------------------------------------- */
+
+.eyebrow {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+}
+
+.signage {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  line-height: 1.05;
+}
+
+/* --- The evacuation rail: this site's signature element ------------------ */
+/*
+ * A photoluminescent strip down the edge of the screen, one tick per section,
+ * filling as the checklist is answered — the wayfinding glow-strip from an
+ * evacuation route, doing the real job of "where am I in 36 questions".
+ */
+
+.rail {
+  position: sticky;
+  top: 5.5rem;
+  align-self: start;
+}
+
+.rail-tick {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: 100%;
+  padding: 0.3rem 0 0.3rem 1.125rem;
+  text-align: left;
+  color: var(--color-ink-soft);
+  font-size: 0.8125rem;
+  line-height: 1.25;
+  transition: color 0.15s ease;
+}
+
+.rail-tick::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--color-rule);
+}
+
+.rail-tick[data-state="done"]::before {
+  background: var(--color-safe);
+}
+
+.rail-tick[data-state="active"]::before {
+  background: var(--color-signal);
+}
+
+.rail-tick[data-state="active"] {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
+.rail-tick:hover {
+  color: var(--color-ink);
+}
+
+.rail-count {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Compact horizontal rail for phones. */
+.rail-bar {
+  display: flex;
+  gap: 3px;
+  height: 4px;
+}
+
+.rail-bar-seg {
+  flex: 1;
+  background: var(--color-rule);
+}
+
+.rail-bar-seg[data-state="done"] {
+  background: var(--color-safe);
+}
+
+.rail-bar-seg[data-state="active"] {
+  background: var(--color-signal);
+}
+
+/* --- Answer control ------------------------------------------------------ */
+/*
+ * Two full-height cells rather than radio dots: a 48px+ target for a thumb, and
+ * an unanswered question stays visibly hollow when you scan back over the page.
+ */
+
+.choice-group {
+  display: grid;
+  gap: 0.375rem;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  /* Full-bleed on a phone where the thumb needs the width; capped on desktop so a
+     binary answer doesn't stretch across the whole column. */
+  max-width: 28rem;
+}
+
+.choice {
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid var(--color-rule);
+  border-radius: var(--radius-form);
+  background: var(--color-surface);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+  cursor: pointer;
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease,
+    color 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.choice:hover {
+  border-color: var(--color-ink-soft);
+}
+
+.choice[data-selected="true"][data-tone="safe"] {
+  background: var(--color-safe);
+  border-color: var(--color-safe);
+  color: #fff;
+}
+
+.choice[data-selected="true"][data-tone="alarm"] {
+  background: var(--color-alarm);
+  border-color: var(--color-alarm);
+  color: #fff;
+}
+
+.choice[data-selected="true"][data-tone="neutral"] {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: #fff;
+}
+
+/* --- Form primitives ----------------------------------------------------- */
+
+.field {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.6875rem 0.75rem;
+  border: 1.5px solid var(--color-rule);
+  border-radius: var(--radius-form);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+}
+
+.field::placeholder {
+  color: var(--color-ink-soft);
+  opacity: 0.7;
+}
+
+.field:hover {
+  border-color: var(--color-ink-soft);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0 1.25rem;
+  border-radius: var(--radius-form);
+  border: 1.5px solid transparent;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease,
+    border-color 0.12s ease;
+}
+
+.btn-primary {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-safe);
+}
+
+.btn-primary:disabled {
+  background: var(--color-rule);
+  color: var(--color-ink-soft);
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--color-rule);
+  color: var(--color-ink);
+}
+
+.btn-ghost:hover {
+  border-color: var(--color-ink);
+}
+
+/* --- Question card ------------------------------------------------------- */
+
+.question {
+  padding: 1rem 0;
+  border-top: 1px solid var(--color-rule);
+}
+
+.question[data-invalid="true"] {
+  border-top-color: var(--color-alarm);
+  box-shadow: inset 3px 0 0 var(--color-alarm);
+  padding-left: 0.75rem;
+  margin-left: -0.75rem;
+}
+
+.question-label {
+  display: block;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  margin-bottom: 0.625rem;
+}
