@@ -80,6 +80,21 @@ pemeriksaan, satu kolom = satu pertanyaan, ditambah kolom `Jumlah temuan`.
 Jawaban `Tidak`/`Rusak` diwarnai merah. Rentang tanggal di halaman admin ikut
 diterapkan pada unduhan.
 
+## Data contoh untuk tangkapan layar
+
+Tangkapan layar di atas dibuat dengan data fiktif. Untuk membuatnya ulang,
+jalankan `npm run dev` lalu:
+
+```bash
+npm run seed:demo            # isi 9 pemeriksaan contoh
+npm run seed:demo -- --clean # hapus kembali baris yang tadi diisi
+```
+
+Baris contoh masuk lewat `POST /api/submit`, jadi ikut divalidasi seperti
+pengisian sungguhan. Id yang terbentuk dicatat di `scripts/.demo-ids.json`;
+`--clean` hanya menghapus id itu, tidak pernah baris lain. Skrip menolak
+mengisi tabel yang sudah berisi data kecuali diberi `--force`.
+
 ## Mengubah pertanyaan
 
 `src/lib/forms.ts` dibuat otomatis dari HTML Google Form asli. Untuk
