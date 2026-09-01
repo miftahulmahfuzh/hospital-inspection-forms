@@ -13,6 +13,16 @@ jawaban, dan status wajib-isi disalin apa adanya dari form asli.
 | Pemeriksaan Kondisi APAR | `/forms/kondisi-apar` | 10 |
 | Tanggap Darurat & Kebakaran | `/forms/tanggap-darurat` | 19 dalam 2 bagian |
 
+## Tampilan
+
+Formulir diisi dari ponsel: satu ketukan per pertanyaan, hijau untuk kondisi
+aman dan merah untuk temuan. Progres tersimpan di perangkat, jadi ronde yang
+terputus bisa dilanjutkan.
+
+<p align="center">
+  <img src="docs/screenshots/form.png" alt="Halaman formulir Inspeksi Lingkungan K3RS pada layar ponsel" width="360">
+</p>
+
 ## Menjalankan secara lokal
 
 ```bash
@@ -60,6 +70,10 @@ ditampilkan di rekap admin.
 - ringkasan per formulir,
 - 50 pemeriksaan terakhir,
 - tombol **Unduh Excel**.
+
+<p align="center">
+  <img src="docs/screenshots/admin.png" alt="Halaman admin: jumlah temuan, ringkasan per formulir, dan daftar pemeriksaan terakhir">
+</p>
 
 Berkas `.xlsx` berisi tiga lembar, satu per formulir. Satu baris = satu
 pemeriksaan, satu kolom = satu pertanyaan, ditambah kolom `Jumlah temuan`.
