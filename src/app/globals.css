@@ -222,6 +222,12 @@ body {
 
 .field {
   width: 100%;
+  /* iOS Safari gives form controls an intrinsic min-content width — for a date
+     input it comes from the shadow -webkit-date-and-time-value, for a select from
+     its longest option — and a used `width` cannot resolve below it, so the control
+     renders past the page's px-5 gutter. min-width: 0 is what releases that floor. */
+  min-width: 0;
+  max-width: 100%;
   min-height: 3rem;
   padding: 0.6875rem 0.75rem;
   border: 1.5px solid var(--color-rule);
@@ -230,6 +236,17 @@ body {
   color: var(--color-ink);
   font-family: var(--font-sans);
   font-size: 1rem;
+}
+
+/*
+ * Scoped to date inputs on purpose: .field is also the <select>, and appearance:none
+ * there would strip the native dropdown chevron. Here it drops iOS's own inner
+ * padding, so the rendered date shares a left inset and a baseline with the plain
+ * text fields below it. The native date wheel still opens on tap.
+ */
+input[type="date"].field {
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .field::placeholder {
