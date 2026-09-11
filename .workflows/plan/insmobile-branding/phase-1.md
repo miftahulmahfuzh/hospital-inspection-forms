@@ -32,7 +32,7 @@ The reconciler reads this section to detect cross-phase conflicts. This is a sin
 **Creates:**
 - `brand/logo-k3.jpeg`, `brand/logo-kabupaten-lima-puluh-kota.jpeg` — committed copies of Arif's untracked originals (copied, never moved)
 - `scripts/make-brand-assets.py` — re-runnable asset pipeline
-- `src/assets/logo-k3.png` (~132x128), `src/assets/logo-lima-puluh-kota.png` (~109x128) — transparent header marks, statically imported
+- `src/assets/logo-k3.png` (132x128), `src/assets/logo-lima-puluh-kota.png` (110x128) — transparent header marks, statically imported (dimensions validated by running the script)
 - `src/app/icon.png` (128x128, K3 mark on transparent), `src/app/apple-icon.png` (180x180, K3 mark on white) — Next 16 metadata file conventions
 - `.wordmark` CSS class (`src/app/globals.css`, unlayered, `text-transform: none`)
 **Signature changes:** none — `SiteHeader({ right }: { right?: React.ReactNode })` keeps its props and its `Link href="/"` behavior; all five consumers (`page.tsx`, `admin/page.tsx`, `admin/login/page.tsx`, `forms/[slug]/page.tsx`, `not-found.tsx`) compile unchanged.
@@ -306,7 +306,7 @@ sha256sum src/assets/*.png src/app/icon.png src/app/apple-icon.png > /tmp/brand-
 python3 scripts/make-brand-assets.py
 sha256sum -c /tmp/brand-assets.sha   # all OK — re-runnable and deterministic
 ```
-Expected: four files, header PNGs 128 px tall (k3 ~132 px wide, kabupaten ~109 px wide), `icon.png` 128x128 RGBA with transparency, `apple-icon.png` 180x180 opaque white. `src/app/favicon.ico` is NOT touched.
+Expected (validated while planning — this exact script ran against the real sources): four files, header PNGs 128 px tall (k3 **132 px** wide, kabupaten **110 px** wide), `icon.png` 128x128 RGBA with transparency (corner alpha 0), `apple-icon.png` 180x180 opaque white. Kabupaten output corners fully transparent, shield quadrants opaque. `src/app/favicon.ico` is NOT touched.
 **Impact:** The four PNGs are committed build inputs — `next build` does not regenerate them. Delete risk: none; regenerable from `brand/` any time.
 
 ### Step 4: Add the `.wordmark` override to globals.css
