@@ -23,6 +23,16 @@ const INK = "FF14261C";
 const ALARM = "FFC6362B";
 const SAFE = "FF0F7A3D";
 
+function formatFileAnswer(raw: unknown): string {
+  if (typeof raw !== "string" || !raw) return "";
+  try {
+    const files = JSON.parse(raw) as { url: string; name: string }[];
+    return files.map((f) => `${f.name}: ${f.url}`).join("\n");
+  } catch {
+    return "";
+  }
+}
+
 export async function GET(request: Request) {
   if (!(await isAuthenticated())) {
     return NextResponse.json({ error: "Tidak diizinkan." }, { status: 401 });
@@ -53,7 +63,7 @@ export async function GET(request: Request) {
           header: q.label,
           key: q.id,
           // Free-text answers need room; Ya/Tidak columns do not.
-          width: q.type === "textarea" ? 40 : q.type === "radio" ? 14 : 20,
+          width: q.type === "textarea" || q.type === "file" ? 40 : q.type === "radio" ? 14 : 20,
         })),
         { header: "Jumlah temuan", key: "findings", width: 16 },
       ];
@@ -69,7 +79,12 @@ export async function GET(request: Request) {
         const added = sheet.addRow({
           no: i + 1,
           submitted: WIB.format(new Date(row.created_at)),
-          ...Object.fromEntries(questions.map((q) => [q.id, answers[q.id] ?? ""])),
+          ...Object.fromEntries(
+            questions.map((q) => [
+              q.id,
+              q.type === "file" ? formatFileAnswer(answers[q.id]) : (answers[q.id] ?? ""),
+            ]),
+          ),
           findings: row.findings,
         });
         added.alignment = { vertical: "top", wrapText: true };
