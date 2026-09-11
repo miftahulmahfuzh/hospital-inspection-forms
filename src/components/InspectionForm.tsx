@@ -2,10 +2,23 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { upload } from "@vercel/blob/client";
 import type { FormDef, Question } from "@/lib/forms";
 import { allQuestions } from "@/lib/forms";
 
 type Answers = Record<string, string>;
+
+type UploadedFile = { url: string; name: string; size: number };
+
+function parseFileAnswer(value: string): UploadedFile[] {
+  if (!value) return [];
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? (parsed as UploadedFile[]) : [];
+  } catch {
+    return [];
+  }
+}
 
 /** Green for the compliant answer, red for the one that generates a work order. */
 function toneFor(option: string): "safe" | "alarm" | "neutral" {
@@ -98,19 +111,32 @@ export function InspectionForm({ form }: { form: FormDef }) {
   const missing = useMemo(() => {
     const out = new Set<string>();
     for (const q of questions) {
-      if (q.required && !(answers[q.id] ?? "").trim()) out.add(q.id);
+      if (!q.required) continue;
+      const answered =
+        q.type === "file"
+          ? parseFileAnswer(answers[q.id] ?? "").length > 0
+          : Boolean((answers[q.id] ?? "").trim());
+      if (!answered) out.add(q.id);
     }
     return out;
   }, [questions, answers]);
 
-  const answeredCount = questions.filter((q) => (answers[q.id] ?? "").trim()).length;
+  const answeredCount = questions.filter((q) =>
+    q.type === "file"
+      ? parseFileAnswer(answers[q.id] ?? "").length > 0
+      : Boolean((answers[q.id] ?? "").trim()),
+  ).length;
   const findingCount = questions.filter((q) =>
     ["Tidak", "Rusak"].includes(answers[q.id] ?? ""),
   ).length;
 
   const sectionProgress = form.sections.map((s) => ({
     total: s.questions.length,
-    done: s.questions.filter((q) => (answers[q.id] ?? "").trim()).length,
+    done: s.questions.filter((q) =>
+      q.type === "file"
+        ? parseFileAnswer(answers[q.id] ?? "").length > 0
+        : Boolean((answers[q.id] ?? "").trim()),
+    ).length,
   }));
 
   async function handleSubmit(e: React.FormEvent) {
@@ -313,6 +339,7 @@ export function InspectionForm({ form }: { form: FormDef }) {
                   question={q}
                   value={answers[q.id] ?? ""}
                   onChange={setAnswer}
+                  formSlug={form.slug}
                   invalid={showErrors && missing.has(q.id)}
                 />
               ))}
@@ -371,11 +398,13 @@ function QuestionField({
   question,
   value,
   onChange,
+  formSlug,
   invalid,
 }: {
   question: Question;
   value: string;
   onChange: (id: string, value: string) => void;
+  formSlug: string;
   invalid: boolean;
 }) {
   const labelId = `label-${question.id}`;
@@ -441,6 +470,14 @@ function QuestionField({
           placeholder="Tulis catatan bila ada"
           onChange={(e) => onChange(question.id, e.target.value)}
         />
+      ) : question.type === "file" ? (
+        <FileQuestionField
+          question={question}
+          value={value}
+          onChange={onChange}
+          formSlug={formSlug}
+          invalid={invalid}
+        />
       ) : (
         <input
           className="field"
@@ -451,6 +488,104 @@ function QuestionField({
           placeholder={question.type === "date" ? undefined : "Tulis di sini"}
           onChange={(e) => onChange(question.id, e.target.value)}
         />
+      )}
+    </div>
+  );
+}
+
+function FileQuestionField({
+  question,
+  value,
+  onChange,
+  formSlug,
+  invalid,
+}: {
+  question: Question;
+  value: string;
+  onChange: (id: string, value: string) => void;
+  formSlug: string;
+  invalid: boolean;
+}) {
+  const files = useMemo(() => parseFileAnswer(value), [value]);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const maxFiles = question.maxFiles ?? 1;
+  const maxBytes = (question.maxSizeMB ?? 10) * 1024 * 1024;
+
+  async function handlePick(e: React.ChangeEvent<HTMLInputElement>) {
+    const picked = Array.from(e.target.files ?? []);
+    e.target.value = ""; // let the same file be re-picked after a "Hapus"
+
+    if (picked.length === 0) return;
+    if (files.length + picked.length > maxFiles) {
+      setError(`Maksimal ${maxFiles} berkas.`);
+      return;
+    }
+    const oversized = picked.find((f) => f.size > maxBytes);
+    if (oversized) {
+      setError(`"${oversized.name}" melebihi ${question.maxSizeMB ?? 10}MB.`);
+      return;
+    }
+
+    setError(null);
+    setUploading(true);
+    try {
+      const uploaded: UploadedFile[] = [];
+      for (const file of picked) {
+        const blob = await upload(file.name, file, {
+          access: "public",
+          handleUploadUrl: "/api/upload",
+          clientPayload: JSON.stringify({ formSlug, questionId: question.id }),
+        });
+        uploaded.push({ url: blob.url, name: file.name, size: file.size });
+      }
+      onChange(question.id, JSON.stringify([...files, ...uploaded]));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unggah gagal. Coba lagi.");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function remove(url: string) {
+    onChange(question.id, JSON.stringify(files.filter((f) => f.url !== url)));
+  }
+
+  return (
+    <div>
+      <input
+        type="file"
+        className="field"
+        accept={question.accept}
+        multiple={maxFiles > 1}
+        disabled={uploading || files.length >= maxFiles}
+        onChange={handlePick}
+        aria-invalid={invalid}
+      />
+      {uploading && <p className="mt-1.5 text-xs text-ink-soft">Mengunggah…</p>}
+      {error && <p className="mt-1.5 text-xs text-alarm">{error}</p>}
+      {files.length > 0 && (
+        <ul className="mt-2 space-y-1">
+          {files.map((f) => (
+            <li key={f.url} className="flex items-center justify-between gap-3 text-xs">
+              <a
+                href={f.url}
+                target="_blank"
+                rel="noreferrer"
+                className="truncate underline underline-offset-2"
+              >
+                {f.name}
+              </a>
+              <button
+                type="button"
+                onClick={() => remove(f.url)}
+                className="shrink-0 text-alarm underline-offset-2 hover:underline"
+              >
+                Hapus
+              </button>
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );
