@@ -3,7 +3,7 @@
 // even if a label is reworded later. Ids prefixed `q_` have no Google-form source —
 // they were added directly on this site when the forms diverged (2026-09-11 sync).
 
-export type QuestionType = "text" | "textarea" | "radio" | "select" | "date";
+export type QuestionType = "text" | "textarea" | "radio" | "select" | "date" | "file";
 
 export type Question = {
   id: string;
@@ -11,6 +11,11 @@ export type Question = {
   type: QuestionType;
   required: boolean;
   options?: string[];
+  /** "file" questions only. */
+  maxFiles?: number;
+  maxSizeMB?: number;
+  /** Passed to the <input accept> attribute and enforced server-side. */
+  accept?: string;
 };
 
 export type Section = {
@@ -30,6 +35,8 @@ export type FormDef = {
   sheetName: string;
   sections: Section[];
 };
+
+const DOC_ACCEPT = "image/jpeg,image/png,image/webp,image/heic,application/pdf";
 
 const LOKASI_OPTIONS = [
   "Kantor",
@@ -157,6 +164,7 @@ export const FORMS: FormDef[] = [
           { id: "q875061353", label: "MSDS B3 tersedia di ruang penyimpanan bahan", type: "radio", required: true, options: ["Ya", "Tidak"] },
           { id: "q_eyewash", label: "Tersedia eyewash di area berisiko", type: "radio", required: false, options: ["Ya", "Tidak"] },
           { id: "q445808133", label: "Catatan temuan lain", type: "textarea", required: true },
+          { id: "q_dokumentasi", label: "Dokumentasi", type: "file", required: true, maxFiles: 10, maxSizeMB: 100, accept: DOC_ACCEPT },
         ],
       },
     ],
@@ -183,6 +191,7 @@ export const FORMS: FormDef[] = [
           { id: "q_spindle_head", label: "Spindle head — Bagian spindle head berfungsi normal, tidak macet, dan tidak ada kebocoran pada sambungan", type: "radio", required: true, options: ["Ya", "Tidak"] },
           { id: "q_hydrotest", label: "Hydrotest — APAR masih dalam masa berlaku hydrotest (belum melewati jadwal uji tekan ulang sesuai ketentuan)", type: "radio", required: true, options: ["Ya", "Tidak"] },
           { id: "q1109164454", label: "Catatan Tambahan", type: "textarea", required: true },
+          { id: "q_dokumentasi", label: "Dokumentasi", type: "file", required: true, maxFiles: 1, maxSizeMB: 10, accept: DOC_ACCEPT },
         ],
       },
     ],
@@ -235,6 +244,7 @@ export const FORMS: FormDef[] = [
           { id: "q_papan_jadwal_code_red", label: "Papan tulis jadwal tim code red terisi, lengkap dengan helm petugas", type: "radio", required: true, options: ["Ya", "Tidak"] },
           { id: "q_tidak_ada_puntung_rokok", label: "Tidak terdapat puntung rokok di ruangan dan sekitar ruangan", type: "radio", required: true, options: ["Ya", "Tidak"] },
           { id: "q_temuan_lainnya", label: "Temuan lainnya", type: "textarea", required: true },
+          { id: "q_dokumentasi_pemeriksaan", label: "Dokumentasi Pemeriksaan", type: "file", required: true, maxFiles: 10, maxSizeMB: 100, accept: DOC_ACCEPT },
         ],
       },
     ],
