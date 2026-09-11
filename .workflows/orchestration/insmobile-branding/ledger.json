@@ -3,6 +3,12 @@
   "coordinator": "orch-insmobile-branding",
   "coordinator_session_id": "62d80ea1-2e73-4f9e-9454-f62e45ccec00",
   "created": "2026-09-11T04:20:17+00:00",
+  "landed": {
+    "at": "2026-09-11T04:38:12+00:00",
+    "base": "main",
+    "commit": "941e61521ccadccc584b6f7a5d24cf75ab664980",
+    "machine": "pc"
+  },
   "phases": [
     {
       "card": null,
@@ -26,6 +32,6 @@
   "plan": "/home/miftah/hospital-inspection-forms/.workflows/orchestration/insmobile-branding/PLAN.md",
   "repo": "/home/miftah/hospital-inspection-forms",
   "slug": "insmobile-branding",
-  "updated": "2026-09-11T04:35:00+00:00",
+  "updated": "2026-09-11T04:38:12+00:00",
   "worktree": "/home/miftah/.worktrees/hospital-inspection-forms/insmobile-branding"
 }
