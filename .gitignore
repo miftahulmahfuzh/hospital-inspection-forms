@@ -41,5 +41,8 @@ yarn-error.log*
 next-env.d.ts
 !.env.example
 
+# git worktrees for isolated feature work
+.worktrees/
+
 # demo-seed bookkeeping (see scripts/seed-demo.mjs)
 scripts/.demo-ids.json
