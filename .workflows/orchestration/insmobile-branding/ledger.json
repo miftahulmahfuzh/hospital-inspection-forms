@@ -1,0 +1,31 @@
+{
+  "branch": "feature/insmobile-branding",
+  "coordinator": "orch-insmobile-branding",
+  "coordinator_session_id": "62d80ea1-2e73-4f9e-9454-f62e45ccec00",
+  "created": "2026-09-11T04:20:17+00:00",
+  "phases": [
+    {
+      "card": null,
+      "commit": "f4a1ba64ee63e13c6144fd8d5d7528c4e9103ffc",
+      "depends_on": [],
+      "difficulty": "NORMAL",
+      "n": 1,
+      "note": "wordmark+logos on all 5 routes; build+lint pass; no code drift; decision: build-time DATABASE_URL met by gitignored .env.local copied from primary checkout (untracked)",
+      "package": "src/`, `scripts/`, `brand/",
+      "plan": ".workflows/plan/insmobile-branding/phase-1.md",
+      "reported_at": "2026-09-11T04:35:00+00:00",
+      "satisfies": [
+        "R1",
+        "R2"
+      ],
+      "status": "done",
+      "task_id": "P1-HIF-A000",
+      "title": "InsMobile wordmark + K3 & Kabupaten Lima Puluh Kota logos across the app"
+    }
+  ],
+  "plan": "/home/miftah/hospital-inspection-forms/.workflows/orchestration/insmobile-branding/PLAN.md",
+  "repo": "/home/miftah/hospital-inspection-forms",
+  "slug": "insmobile-branding",
+  "updated": "2026-09-11T04:35:00+00:00",
+  "worktree": "/home/miftah/.worktrees/hospital-inspection-forms/insmobile-branding"
+}
