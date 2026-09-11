@@ -43,6 +43,35 @@ export async function POST(request: Request) {
     }
     const text = (value ?? "").trim();
 
+    if (q.type === "file") {
+      let uploaded: unknown;
+      try {
+        uploaded = text ? JSON.parse(text) : [];
+      } catch {
+        return bad(`Berkas untuk "${q.label}" tidak valid.`);
+      }
+      if (!Array.isArray(uploaded)) {
+        return bad(`Berkas untuk "${q.label}" tidak valid.`);
+      }
+      if (q.required && uploaded.length === 0) {
+        return bad(`"${q.label}" wajib diisi.`);
+      }
+      if (uploaded.length > (q.maxFiles ?? 1)) {
+        return bad(`Maksimal ${q.maxFiles ?? 1} berkas untuk "${q.label}".`);
+      }
+      for (const f of uploaded) {
+        const url = (f as { url?: unknown } | null)?.url;
+        if (typeof url !== "string" || !url.includes(".public.blob.vercel-storage.com/")) {
+          return bad(`Berkas untuk "${q.label}" tidak valid.`);
+        }
+      }
+      if (text.length > MAX_TEXT * 4) {
+        return bad(`Jawaban untuk "${q.label}" terlalu panjang.`);
+      }
+      if (uploaded.length > 0) clean[q.id] = text;
+      continue;
+    }
+
     if (!text) {
       if (q.required) return bad(`"${q.label}" wajib diisi.`);
       continue;
