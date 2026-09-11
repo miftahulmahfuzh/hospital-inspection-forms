@@ -21,11 +21,11 @@ const plexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Inspeksi K3RS",
-    template: "%s · Inspeksi K3RS",
+    default: "InsMobile · Inspeksi K3RS",
+    template: "%s · InsMobile",
   },
   description:
-    "Formulir inspeksi K3RS RSUD dr. Achmad Darwis: lingkungan kerja, kondisi APAR, dan sarana tanggap darurat.",
+    "InsMobile — sistem inspeksi mobile K3RS RSUD dr. Achmad Darwis. Formulir lingkungan kerja, kondisi APAR, dan sarana tanggap darurat.",
 };
 
 export const viewport: Viewport = {
