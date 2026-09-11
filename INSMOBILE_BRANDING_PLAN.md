@@ -6,7 +6,7 @@
 **Worktree:** `/home/miftah/.worktrees/hospital-inspection-forms/insmobile-branding`
 **Branch:** `feature/insmobile-branding` (base: `origin/main` @ `d7c2aae`)
 **Phases:** 1
-**Status:** planned
+**Status:** complete
 **Coordinator:** —
 
 ## Why
@@ -41,7 +41,7 @@ Arif's Latsar CPNS actualization report titles the system "Sistem Inspeksi Mobil
 
 | # | Title | Satisfies | Package | Files | Depends on | Difficulty | Plan | TaskID | Card |
 |---|-------|-----------|---------|-------|-----------|------------|------|--------|------|
-| 1 | InsMobile wordmark + K3 & Kabupaten Lima Puluh Kota logos across the app | R1, R2 | `src/`, `scripts/`, `brand/` | 13 | — | NORMAL | `.workflows/plan/insmobile-branding/phase-1.md` | — | — |
+| 1 | InsMobile wordmark + K3 & Kabupaten Lima Puluh Kota logos across the app | R1, R2 | `src/`, `scripts/`, `brand/` | 13 | — | NORMAL | `.workflows/plan/insmobile-branding/phase-1.md` | P1-HIF-A000 | — |
 
 ### Phase 1 — InsMobile wordmark + K3 & Kabupaten Lima Puluh Kota logos across the app
 **Satisfies:** R1, R2

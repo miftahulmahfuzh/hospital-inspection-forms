@@ -1,4 +1,7 @@
-# Inspeksi K3RS
+# InsMobile (Inspeksi K3RS)
+
+Nama **InsMobile** (inspeksi mobile) adalah nama sistem ini dalam Rancangan
+Aktualisasi Arif Rahman Hakim — PD CPNS Kabupaten Lima Puluh Kota 2026.
 
 Website pemeriksaan K3RS untuk **RSUD dr. Achmad Darwis**. Tiga formulir
 diisi dari ponsel saat ronde, tersimpan di Neon Postgres, dan direkap di

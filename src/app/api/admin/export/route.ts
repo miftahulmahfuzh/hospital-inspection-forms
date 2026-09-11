@@ -36,7 +36,7 @@ export async function GET(request: Request) {
 
   try {
     const workbook = new ExcelJS.Workbook();
-    workbook.creator = "Inspeksi K3RS · RSUD dr. Achmad Darwis";
+    workbook.creator = "InsMobile · RSUD dr. Achmad Darwis";
     workbook.created = new Date();
 
     for (const form of FORMS) {

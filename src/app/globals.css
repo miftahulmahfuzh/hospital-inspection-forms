@@ -76,6 +76,17 @@ body {
   line-height: 1.05;
 }
 
+/*
+ * Header wordmark keeps its camelCase. .signage uppercases everything it
+ * touches, and a Tailwind utility cannot override it: every rule in this file
+ * is unlayered, and unlayered declarations beat @layer utilities (where
+ * `normal-case` lives) regardless of order. Same trick, then — unlayered,
+ * declared after .signage, so it wins on source order.
+ */
+.wordmark {
+  text-transform: none;
+}
+
 /* --- The evacuation rail: this site's signature element ------------------ */
 /*
  * A photoluminescent strip down the edge of the screen, one tick per section,

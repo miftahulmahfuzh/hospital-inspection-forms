@@ -15,7 +15,7 @@ export default function Home() {
 
       <main className="mx-auto max-w-5xl px-5">
         <section className="border-b border-rule py-12 sm:py-16">
-          <p className="eyebrow">Komite K3RS · Formulir Pemeriksaan</p>
+          <p className="eyebrow">InsMobile · Komite K3RS · Formulir Pemeriksaan</p>
           <h1 className="signage mt-3 max-w-4xl text-4xl leading-[0.98] sm:text-[3.5rem]">
             Catat temuan di tempat,
             <br />
@@ -75,8 +75,8 @@ export default function Home() {
 
       <footer className="mx-auto max-w-5xl px-5 pb-10">
         <p className="text-xs text-ink-soft">
-          Komite Kesehatan dan Keselamatan Kerja Rumah Sakit · RSUD dr. Achmad
-          Darwis
+          InsMobile · Komite Kesehatan dan Keselamatan Kerja Rumah Sakit · RSUD
+          dr. Achmad Darwis
         </p>
       </footer>
     </div>
